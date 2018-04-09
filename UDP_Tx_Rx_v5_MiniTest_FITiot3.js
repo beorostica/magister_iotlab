@@ -49,7 +49,7 @@ var time_start;
 var time;
 
 var file = require('fs');
-var file_name = 'DATA_agent_' + myIPaddress.substring(10) + '.txt';
+var file_name = 'DATA_agent_' + myIPaddress.substring(8) + '.txt';
 
 
 
