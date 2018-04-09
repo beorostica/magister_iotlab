@@ -3,8 +3,8 @@
 /////////// Parameters of own agent: ////////////////////////
 /////////////////////////////////////////////////////////////
 
-var myIPaddress = '172.16.12.96';
-var neighbor    = ['172.16.12.95', '172.16.12.97'];
+var myIPaddress = '10.0.12.96';
+var neighbor    = ['10.0.12.95', '10.0.12.97'];
 var initial_value  = 5;        //Initial Measurement
 var timer_interval = 1000;      //Timer frecuency
 
