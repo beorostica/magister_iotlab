@@ -42,7 +42,7 @@ for (var i = 0; i < number_neighbors; i++){
 }
 
 //Operation mode:
-var MODE_ON = 1;            //0: OFF,   1:ON
+var MODE_ON = 0;            //0: OFF,   1:ON
 
 //Elements for debbuging:
 var time_start;
