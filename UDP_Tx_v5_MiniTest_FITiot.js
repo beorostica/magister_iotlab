@@ -1,7 +1,7 @@
 
 
 var udp_datagram  = require('dgram');
-var IP_broadcast = '10.0.15.255';
+var IP_broadcast = '10.0.12.255';
 var client       = udp_datagram.createSocket('udp4');
 
 
