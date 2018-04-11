@@ -24,8 +24,8 @@ var alpha = 0.5;
 //UDP variables and objects:
 var udp_port     = 4000;
 var udp_datagram = require('dgram');
-var udp_client   = udp_datagram.createSocket('udp4');
-var udp_server   = udp_datagram.createSocket('udp4');
+var udp_client   = udp_datagram.createSocket('udp6');
+var udp_server   = udp_datagram.createSocket('udp6');
 
 //For collision strategy:
 var index_neighbor_chosen = (number_neighbors-1);
