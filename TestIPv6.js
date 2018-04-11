@@ -1,18 +1,14 @@
 var udp_datagram  = require('dgram');
-var IP_broadcast = '10.0.15.255';
-var client       = udp_datagram.createSocket('udp4');
+var IP_1 = '2001:660:5307:3000::5f';
+var IP_2 = '2001:660:5307:3000::60';
+var IP_3 = '2001:660:5307:3000::64';
+var client       = udp_datagram.createSocket('udp6');
 
 
 //****************************************************************************//
 //*** Send UDP datagram to Broadcast *****************************************//
 //****************************************************************************//
 
-//Let broadcast transmission:
-client.bind( 
-    function(){ 
-        client.setBroadcast(true) 
-    } 
-);
 
 //Each step, send UDP datagram:
 function send_UDPdatagram(){
@@ -20,7 +16,25 @@ function send_UDPdatagram(){
     var message = new Buffer("start");
     
     client.send(
-        message, 0, message.length, 4000, IP_broadcast, 
+        message, 0, message.length, 4000, IP_1, 
+        function(err,bytes){
+            if(err){
+                throw err;    
+            }
+        }
+    );
+    
+    client.send(
+        message, 0, message.length, 4000, IP_2, 
+        function(err,bytes){
+            if(err){
+                throw err;    
+            }
+        }
+    );
+    
+    client.send(
+        message, 0, message.length, 4000, IP_3, 
         function(err,bytes){
             if(err){
                 throw err;    
