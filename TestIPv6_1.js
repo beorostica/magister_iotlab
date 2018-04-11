@@ -10,8 +10,8 @@ var timer_interval = 1000;      //Timer frecuency
 
 //Agent's neighbors:
 var number_neighbors = neighbor.length;
-var dummyNotUsedIPaddress = '172.16.12.99';
-var neighbor_not_listened = ['172.16.12.77', dummyNotUsedIPaddress];
+var dummyNotUsedIPaddress = '2001:660:5307:3000::5e';
+var neighbor_not_listened = ['2001:660:5307:3000::65', dummyNotUsedIPaddress];
 
 
 /////////////////////////////////////////////////////////////
