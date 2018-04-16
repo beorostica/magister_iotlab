@@ -5,7 +5,7 @@
 
 var myIPaddress = '2001:660:4701:f080::2';
 var neighbor    = ['2001:660:3207:0400::8c', '2001:660:5307:3000::14'];
-var initial_value  = 65;        //Initial Measurement
+var initial_value  = 90;        //Initial Measurement
 var timer_interval = 1000;      //Timer frecuency
 
 //Agent's neighbors:
