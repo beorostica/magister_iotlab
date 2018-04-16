@@ -2,8 +2,8 @@
 /////////// Parameters of own agent: ////////////////////////
 /////////////////////////////////////////////////////////////
 
-var myIPaddress = '2001:660:3207:0400::28';
-var neighbor    = ['2001:660:5307:3000::14', '2001:660:4701:f080::c'];
+var myIPaddress = '2001:660:4701:f080::4';
+var neighbor    = ['2001:660:5307:3000::67', '2001:660:5307:3000::69'];
 var initial_value  = 65;        //Initial Measurement
 var timer_interval = 1000;      //Timer frecuency
 
