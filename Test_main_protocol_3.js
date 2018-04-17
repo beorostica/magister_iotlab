@@ -53,6 +53,9 @@ var file_name = 'DATA_agent_' + myIPaddress.substring(8) + '.txt';
 //*** Send UDP datagram to Someone *******************************************//
 //****************************************************************************//
 
+//Let broadcast transmission:
+udp_client.bind( function(){ udp_client.setBroadcast(true) } );
+
 //Set timer interval for Tx data:
 setInterval(send_UDPdatagram, timer_interval);
 
@@ -107,30 +110,30 @@ udp_server.on(
             //Define the time for debugging:
             time = (new Date() - time_start);
             datalogger_Final();
-        }        
+        }    
         
-        //Receive only if the operation mode is ON and the message received is neither 'start' nor 'stop':
+        //Receive only if this agent didn't send the datagram and operation mode is ON: (The last condition never happend)
         if((MODE_ON == 1) && (udp_message_Rx != 'start') && (udp_message_Rx != 'stop')){
             
-            //Recognize the agent who sent the message:
-            var listenedIPaddress       = udp_Rx_info.address;
-            var index_neighbor_listened = neighbor.indexOf(listenedIPaddress);
-            
-            //Get states from datagram:
-            var string_received = udp_message_Rx.toString();
-            var index_reference_1 = string_received.indexOf(";",0);
-            var index_reference_2 = string_received.indexOf(";",(index_reference_1+1));
-            var index_reference_3 = string_received.indexOf(";",(index_reference_2+1));
-            var data_Rx_type    = 1*string_received.substring(0,index_reference_1);
-            var data_Rx_zeta    = 1*string_received.substring(index_reference_1+1, index_reference_2);
-            var data_Rx_sigma   = 1*string_received.substring(index_reference_2+1, index_reference_3);
-            var data_Rx_estigma = 1*string_received.substring(index_reference_3+1);
-            
-            
-            //If the message is type 1 (i.e. Rx, Update and Tx):
-            if(data_Rx_type == 1){
+                //Recognize the agent who sent the message:
+                var listenedIPaddress       = udp_Rx_info.address;
+                var index_neighbor_listened = neighbor.indexOf(listenedIPaddress);
                 
-              //Manipulated Variable:
+                //Get states from datagram:
+                var string_received = udp_message_Rx.toString();
+                var index_reference_1 = string_received.indexOf(";",0);
+                var index_reference_2 = string_received.indexOf(";",(index_reference_1+1));
+                var index_reference_3 = string_received.indexOf(";",(index_reference_2+1));
+                var data_Rx_type    = 1*string_received.substring(0,index_reference_1);
+                var data_Rx_zeta    = 1*string_received.substring(index_reference_1+1, index_reference_2);
+                var data_Rx_sigma   = 1*string_received.substring(index_reference_2+1, index_reference_3);
+                var data_Rx_estigma = 1*string_received.substring(index_reference_3+1);
+                
+                
+                //If the message is type 1 (i.e. Rx, Update and Tx):
+                if(data_Rx_type == 1){
+                    
+                    //Manipulated Variable:
 					var zeta_corrected_own = zeta + data_Rx_sigma - estigma[index_neighbor_listened];
 					var zeta_corrected_nei = data_Rx_zeta + sigma[index_neighbor_listened] - data_Rx_estigma;
                     var delta_zeta = alpha*(zeta_corrected_own - zeta_corrected_nei);
@@ -139,46 +142,42 @@ udp_server.on(
                     zeta = zeta_corrected_own - delta_zeta;
                     sigma[index_neighbor_listened] = sigma[index_neighbor_listened] + delta_zeta;
 					estigma[index_neighbor_listened] = data_Rx_sigma;
-                
-                //Update State:
-                zeta = zeta_corrected_own - delta_zeta;
-                sigma[index_neighbor_listened] = sigma[index_neighbor_listened] + delta_zeta;
-                estigma[index_neighbor_listened] = data_Rx_sigma;
-                
-                //Transmission due to message type 1 was received:
-                var udp_message_Tx_RxEvent = new Buffer('2;' + zeta + ';' + sigma[index_neighbor_listened] + ';' + estigma[index_neighbor_listened]);
-                udp_client.send(
-                    udp_message_Tx_RxEvent, 0, udp_message_Tx_RxEvent.length, udp_port, listenedIPaddress, 
-                    function(err,bytes){
-                        if(err){
-                            throw err;    
+                    
+                    //Transmission due to message type 1 was received:
+                    var udp_message_Tx_RxEvent = new Buffer('2;' + zeta + ';' + sigma[index_neighbor_listened] + ';' + estigma[index_neighbor_listened]);
+                    udp_client.send(
+                        udp_message_Tx_RxEvent, 0, udp_message_Tx_RxEvent.length, udp_port, listenedIPaddress, 
+                        function(err,bytes){
+                            if(err){
+                                throw err;    
+                            }
                         }
-                    }
-                );
+                    );
+                    
+                    //Console and File print for debugging:
+                    //console.log('Transmission event has occured to: ' + listenedIPaddress + '. Message Sent: ' + udp_message_Tx_RxEvent);
+                    //console.log(zeta + '   ' + sigma + '   ' + estigma);
+                    time = (new Date() - time_start);
+                    console.log(time + ';' + zeta);
+                    file.appendFile(file_name, time + ";" + zeta + '\n');
+                    
+                }
                 
-                //Console and File print for debugging:
-                //console.log('Transmission event has occured to: ' + listenedIPaddress + '. Message Sent: ' + udp_message_Tx_RxEvent);
-                //console.log(zeta + '   ' + sigma + '   ' + estigma);
-                time = (new Date() - time_start);
-                console.log(time + ';' + zeta);
-                file.appendFile(file_name, time + ";" + zeta + '\n');
-                
-            }
-            
-            //If the message is type 2 (i.e. Rx and Update):
-            if(data_Rx_type == 2){
-                
-                //Update State:
-                zeta = zeta + data_Rx_sigma - estigma[index_neighbor_listened];
-                estigma[index_neighbor_listened] = data_Rx_sigma;
-                
-                //Console and File print for debugging:
-                //console.log('Reception event has produced an updated);
-                //console.log(zeta + '   ' + sigma + '   ' + estigma);
-                time = (new Date() - time_start);
-                console.log(time + ';' + zeta);
-                file.appendFile(file_name, time + ";" + zeta + '\n');
-               }
+                //If the message is type 2 (i.e. Rx and Update):
+                if(data_Rx_type == 2){
+                    
+                    //Update State:
+                    zeta = zeta + data_Rx_sigma - estigma[index_neighbor_listened];
+                    estigma[index_neighbor_listened] = data_Rx_sigma;
+                    
+                    //Console and File print for debugging:
+                    //console.log('Reception event has produced an updated);
+                    //console.log(zeta + '   ' + sigma + '   ' + estigma);
+                    time = (new Date() - time_start);
+                    console.log(time + ';' + zeta);
+                    file.appendFile(file_name, time + ";" + zeta + '\n');
+                    
+                }
             
         }
         
