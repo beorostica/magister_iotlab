@@ -130,8 +130,15 @@ udp_server.on(
             //If the message is type 1 (i.e. Rx, Update and Tx):
             if(data_Rx_type == 1){
                 
-                //Manipulated Variable    var zeta_corrected_own = zeta + data_Rx_sigma - estigma[index_neighbor_listened]    var zeta_corrected_nei = data_Rx_zeta + sigma[index_neighbor_listened] - data_Rx_estigma;
-                var delta_zeta = alpha*(zeta_corrected_own - zeta_corrected_nei);
+              //Manipulated Variable:
+					var zeta_corrected_own = zeta + data_Rx_sigma - estigma[index_neighbor_listened];
+					var zeta_corrected_nei = data_Rx_zeta + sigma[index_neighbor_listened] - data_Rx_estigma;
+                    var delta_zeta = alpha*(zeta_corrected_own - zeta_corrected_nei);
+                    
+                    //Update State:
+                    zeta = zeta_corrected_own - delta_zeta;
+                    sigma[index_neighbor_listened] = sigma[index_neighbor_listened] + delta_zeta;
+					estigma[index_neighbor_listened] = data_Rx_sigma;
                 
                 //Update State:
                 zeta = zeta_corrected_own - delta_zeta;
