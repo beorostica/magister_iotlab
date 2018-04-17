@@ -7,12 +7,6 @@ var neighbor    = ['2001:660:5307:3000::6b', '2001:660:5307:3000::67'];
 var initial_value  = 90;        //Initial Measurement
 var timer_interval = 1000;      //Timer frecuency
 
-//Agent's neighbors:
-var number_neighbors = neighbor.length;
-var dummyNotUsedIPaddress = '2001:660:5307:3000::5e';
-var neighbor_not_listened = ['2001:660:5307:3000::65', dummyNotUsedIPaddress];
-
-
 /////////////////////////////////////////////////////////////
 ////// Since here, every agent have the same code: //////////
 /////////////////////////////////////////////////////////////
@@ -25,6 +19,9 @@ var udp_port     = 4000;
 var udp_datagram = require('dgram');
 var udp_client   = udp_datagram.createSocket('udp6');
 var udp_server   = udp_datagram.createSocket('udp6');
+
+//Agent's neighbors:
+var number_neighbors = neighbor.length;
 
 //For collision strategy:
 var index_neighbor_chosen = (number_neighbors-1);
@@ -55,9 +52,6 @@ var file_name = 'DATA_agent_' + myIPaddress.substring(8) + '.txt';
 //****************************************************************************//
 //*** Send UDP datagram to Someone *******************************************//
 //****************************************************************************//
-
-//Let broadcast transmission:
-udp_client.bind( function(){ udp_client.setBroadcast(true) } );
 
 //Set timer interval for Tx data:
 setInterval(send_UDPdatagram, timer_interval);
@@ -113,47 +107,9 @@ udp_server.on(
             //Define the time for debugging:
             time = (new Date() - time_start);
             datalogger_Final();
-        }
+        }        
         
-        //If the message is for accepting or denying a feasible neighbor:
-        if((udp_message_Rx != 'start') && (udp_message_Rx != 'stop')){
-            
-            //Sepate received data:
-            var data_received = udp_message_Rx.toString();
-            var index_reference = data_received.indexOf(";",0);
-            var data_Rx_action  = data_received.substring(0,index_reference);
-            var data_Rx_IPvalue = data_received.substring(index_reference+1);
-            
-            //If it is a feasible neighbor the IPvalue:
-            if(neighbor.indexOf(data_Rx_IPvalue,0) != -1){
-            
-                //To know the index of the neighbor to accept or deny:
-                var index_in_neighbor_not_listened = neighbor.indexOf(data_Rx_IPvalue,0);
-                
-                //If someone request me that I accept an feasible neighbor:
-                if(data_Rx_action == 'accepted'){
-                    //I look if IPvalue is in the not listened list:
-                    if(neighbor_not_listened.indexOf(data_Rx_IPvalue) != -1){
-                        //I remove the IPvalue from the not listened list:
-                        neighbor_not_listened[index_in_neighbor_not_listened] = dummyNotUsedIPaddress;
-                    }//If IPvalue is in the not listened list: I don't do anything
-                }
-                
-                //If someone request me that I deny an feasible neighbor:
-                if(data_Rx_action == 'denied'){
-                    //I look if IPvalue is not in the not listened list:
-                    if(neighbor_not_listened.indexOf(data_Rx_IPvalue) == -1){
-                        //I add the IPvalue to the not listened list:
-                        neighbor_not_listened[index_in_neighbor_not_listened] = data_Rx_IPvalue;
-                    }//If IPvalue is in the not listened list: I don't do anything
-                }
-                
-            }
-            
-        }
-        
-        
-        //Receive only if this agent didn't send the datagram and operation mode is ON: (The last condition never happend)
+        //Receive only if the operation mode is ON and the message received is neither 'start' nor 'stop':
         if((MODE_ON == 1) && (udp_message_Rx != 'start') && (udp_message_Rx != 'stop')){
             
             //Only receive data if neighbor listened is not denied:
@@ -178,14 +134,14 @@ udp_server.on(
                 if(data_Rx_type == 1){
                     
                     //Manipulated Variable:
-					var zeta_corrected_own = zeta + data_Rx_sigma - estigma[index_neighbor_listened];
-					var zeta_corrected_nei = data_Rx_zeta + sigma[index_neighbor_listened] - data_Rx_estigma;
+		    var zeta_corrected_own = zeta + data_Rx_sigma - estigma[index_neighbor_listened];
+		    var zeta_corrected_nei = data_Rx_zeta + sigma[index_neighbor_listened] - data_Rx_estigma;
                     var delta_zeta = alpha*(zeta_corrected_own - zeta_corrected_nei);
                     
                     //Update State:
                     zeta = zeta_corrected_own - delta_zeta;
                     sigma[index_neighbor_listened] = sigma[index_neighbor_listened] + delta_zeta;
-					estigma[index_neighbor_listened] = data_Rx_sigma;
+		    estigma[index_neighbor_listened] = data_Rx_sigma;
                     
                     //Transmission due to message type 1 was received:
                     var udp_message_Tx_RxEvent = new Buffer('2;' + zeta + ';' + sigma[index_neighbor_listened] + ';' + estigma[index_neighbor_listened]);
