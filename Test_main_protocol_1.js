@@ -135,7 +135,8 @@ udp_server.on(
                 
                 //Update State:
                 zeta = zeta_corrected_own - delta_zeta;
-                sigma[index_neighbor_listened] = sigma[index_neighbor_listened] + delta_zeta    estigma[index_neighbor_listened] = data_Rx_sigma;
+                sigma[index_neighbor_listened] = sigma[index_neighbor_listened] + delta_zeta;
+                estigma[index_neighbor_listened] = data_Rx_sigma;
                 
                 //Transmission due to message type 1 was received:
                 var udp_message_Tx_RxEvent = new Buffer('2;' + zeta + ';' + sigma[index_neighbor_listened] + ';' + estigma[index_neighbor_listened]);
