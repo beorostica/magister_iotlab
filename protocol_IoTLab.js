@@ -28,6 +28,16 @@ var neighbor       = neighbor_data_string.split(',');
 var initial_value  = 1*data_agent_string.substring(index_setup_m2+1,index_setup_m3);
 var timer_interval = 1*data_agent_string.substring(index_setup_m3+1);
 
+console.log('index_setup_start: ' + index_setup_start);
+console.log('index_setup_end: ' + index_setup_end);
+console.log('data_agent_string:' + data_agent_string);
+console.log('index_setup_m1:' + index_setup_m1);
+console.log('index_setup_m2:'+ index_setup_m2);
+console.log('index_setup_m3:' + index_setup_m3);
+console.log('neighbor:' + neighbor);
+console.log('initial_value:' + initial_value);
+console.log('timer_interval:' + timer_interval);
+
 /////////////////////////////////////////////////////////////
 /////////// The Non-Topology Information: ///////////////////
 /////////////////////////////////////////////////////////////
