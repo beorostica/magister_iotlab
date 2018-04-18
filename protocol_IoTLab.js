@@ -66,7 +66,7 @@ var time_start;
 var time;
 
 //To write log file:
-var file_name = 'DATA_agent_' + myIPaddress.substring(9) + '.txt';
+var file_name = 'DATA_agent_' + myIPaddress.substring(10) + '.txt';
 
 
 
