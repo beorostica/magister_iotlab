@@ -15,7 +15,7 @@ var data = file.readFileSync('DATA_TOPOLOGY.txt', 'utf8');
 
 //Get the line with the agent information:
 var data_string = data.toString();
-var index_setup_start = data_string.indexOf(myIPaddress,0);
+var index_setup_start = data_string.indexOf('<' + myIPaddress,0);
 var index_setup_end   = data_string.indexOf('!',index_setup_start);
 //Identify the parts of the line:
 var data_agent_string = data_string.substring(index_setup_start,index_setup_end);
@@ -27,16 +27,6 @@ var neighbor_data_string = data_agent_string.substring(index_setup_m1+2,index_se
 var neighbor       = neighbor_data_string.split(',');
 var initial_value  = 1*data_agent_string.substring(index_setup_m2+1,index_setup_m3);
 var timer_interval = 1*data_agent_string.substring(index_setup_m3+1);
-
-console.log('index_setup_start: ' + index_setup_start);
-console.log('index_setup_end: ' + index_setup_end);
-console.log('data_agent_string:' + data_agent_string);
-console.log('index_setup_m1:' + index_setup_m1);
-console.log('index_setup_m2:'+ index_setup_m2);
-console.log('index_setup_m3:' + index_setup_m3);
-console.log('neighbor:' + neighbor);
-console.log('initial_value:' + initial_value);
-console.log('timer_interval:' + timer_interval);
 
 /////////////////////////////////////////////////////////////
 /////////// The Non-Topology Information: ///////////////////
@@ -76,7 +66,7 @@ var time_start;
 var time;
 
 //To write log file:
-var file_name = 'DATA_agent_' + myIPaddress.substring(10) + '.txt';
+var file_name = 'DATA_agent_' + myIPaddress.substring(9) + '.txt';
 
 
 
