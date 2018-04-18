@@ -66,7 +66,7 @@ var time_start;
 var time;
 
 //To write log file:
-var file_name = 'DATA_agent_' + myIPaddress.substring(8) + '.txt';
+var file_name = 'DATA_agent_' + myIPaddress.substring(9) + '.txt';
 
 
 
@@ -273,5 +273,8 @@ file.appendFile(file_name,'time[ms];consensus_value\n');
 file.appendFile(file_name,"FIRST_DATA\n");
 
 console.log('IPaddress = ' + myIPaddress);
+console.log('Neigbors = ' + neighbor);
+console.log('initial_value = ' + initial_value);
+console.log('timer_interval = ' + timer_interval);
 console.log('Waiting ...');
 console.log(' ');
